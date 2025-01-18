@@ -4,6 +4,7 @@ import com.api.agri.model.Produto;
 import com.api.agri.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -17,7 +18,11 @@ import java.util.UUID;
 public class ProdutoController {
 
     @Autowired
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
+
+    public ProdutoController(ProdutoService produtoService) {
+        this.produtoService = produtoService;
+    }
 
     // Endpoint para listar todos os produtos
     @GetMapping("/listar")
@@ -46,13 +51,14 @@ public class ProdutoController {
     }
 
     // Endpoint para alterar um produto existente
-    @PutMapping("/alterar")
-    public ResponseEntity<Produto> alterar(@RequestBody Produto produto) {
+    @PutMapping("/alterar/{id}")
+    @ResponseBody
+    public ResponseEntity<Produto> alterar(@PathVariable UUID id, @RequestBody Produto produto) {
         try {
-            Produto produtoAlterado = produtoService.alterarProduto(produto);
-            return ResponseEntity.ok(produtoAlterado); // 200 se a alteração for bem-sucedida
+            Produto produtoAlterado = produtoService.alterarProduto(id, produto);
+            return ResponseEntity.ok(produtoAlterado); // Retorna como JSON
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null); // 500 em caso de erro interno
+            return ResponseEntity.status(500).body(null); // Erro
         }
     }
 

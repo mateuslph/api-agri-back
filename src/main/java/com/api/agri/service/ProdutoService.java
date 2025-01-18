@@ -14,7 +14,11 @@ import java.util.UUID;
 public class ProdutoService {
 
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private final ProdutoRepository produtoRepository;
+
+    public ProdutoService(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     // Listar todos os produtos
     @Transactional
@@ -30,10 +34,9 @@ public class ProdutoService {
 
     // Alterar um produto existente
     @Transactional
-    public Produto alterarProduto(Produto produto) {
+    public Produto alterarProduto(UUID id, Produto produto) {
         // Verifica se o produto existe no banco pelo ID
-        Optional<Produto> produtoExistente;
-        produtoExistente = produtoRepository.findById(produto.getId());
+        Optional<Produto> produtoExistente = produtoRepository.findById(id);
 
         if (produtoExistente.isPresent()) {
             // Atualiza os dados do produto existente
@@ -47,9 +50,10 @@ public class ProdutoService {
             // Salva o produto atualizado no banco
             return produtoRepository.save(produtoAtualizado);
         } else {
-            throw new IllegalArgumentException("Produto com ID " + produto.getId() + " não encontrado.");
+            throw new IllegalArgumentException("Produto com ID " + id + " não encontrado.");
         }
     }
+
 
     // Deletar um produto pelo ID
     @Transactional
