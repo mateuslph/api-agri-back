@@ -10,7 +10,7 @@ import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000") // Permitir requisições do frontend React
-@RequestMapping("/produtos")
+@RequestMapping("/api/produtos")
 public class ProdutoController {
 
     @Autowired
